@@ -25,7 +25,7 @@ const CheckersBoard = ({ matrix = defaultMatrix, changedSoldierPosition }) => {
         <>  
             <Board 
                 data={matrixBoard}
-                soldierColor={"#6610f2"}
+                soldierColor={"#af0516"}
             />
         </>
     )
