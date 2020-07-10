@@ -1,0 +1,58 @@
+html, body, #reactapp, .app {
+    height: 100%;
+}
+
+/* //////////////////////////////// app //////////////////////////////// */
+
+.app {
+    height: 100%;
+    min-height: 100vh;
+    background: #e8eef3;
+    display: flex;
+    color: #fff;
+}
+
+.app-content {
+    position: relative;
+    top: 57px;
+    height: 100%;
+    background: var(--dark);
+}
+
+/* //////////////////////////////// aside //////////////////////////////// */
+.app-aside {
+  padding: 23px;
+  background: var(--dark);
+  height: 100%;
+  background: var(--dark);
+}
+
+/* //////////////////////////////// main //////////////////////////////// */
+.app-main {
+  background: var(--gray-light);
+  color: var(--dark);
+  overflow: auto;
+}
+
+/* //////////////////////////////// header //////////////////////////////// */
+.app-header {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    justify-content: center;
+    z-index: 999;
+    padding: 0 50px;
+    display: flex;
+    align-items: center;
+    background: var(--gray-dark);
+    text-align: center;
+    box-shadow: 10px 10px 20px 0px rgba(0,0,0,0.75);
+    
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
