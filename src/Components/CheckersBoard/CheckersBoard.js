@@ -27,7 +27,7 @@ const CheckersBoard = ({ boardMatrix }) => {
                 })
             }
         </StyledBoard>
-    )
+    );
 };
 
 export default CheckersBoard;

@@ -17,7 +17,8 @@ const StyledContent = styled("div")`
 const Content = ({
     onSoldiersPositionChange, 
     changedSoldierPosition,
-    boardMatrix = []
+    boardMatrix = [],
+    checkForGeneralValidationErrors
 }) => {
     return (
         <StyledContent>
@@ -26,6 +27,7 @@ const Content = ({
                 <SideBar>
                 <SoldierPositionForm  
                     onSoldiersPositionChange={onSoldiersPositionChange}
+                    checkForGeneralValidationErrors={checkForGeneralValidationErrors}
                 />
                 </SideBar>
             </Col>

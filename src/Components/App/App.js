@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Container } from "react-bootstrap";
 import Header from "../Header/Header";
 import Content from "../Content/Content";
@@ -42,16 +42,16 @@ const CreateDefaultMatrix = ({
 };
 
 
-const AddRemoveSoldierFromBoard = ({ 
+const AddRemoveSoldierFromMatrix = ({ 
   boardMatrix, 
-  changedSoldierPosition
+  positionState
 }) => {
 
-  const { column, row, isAdd } = changedSoldierPosition;
+  const { column, row, isSoldier } = positionState;
 
   const mapRowCells = data => data.map((cell, index) => {
       return (column === index) 
-          ? { ...cell, isSoldier: isAdd }
+          ? { ...cell, isSoldier }
           : cell
   });
 
@@ -64,34 +64,111 @@ const AddRemoveSoldierFromBoard = ({
 
 
 /***************************************
+ *          Soldiers Position
+ ***************************************/
+
+const getPositionTemplate = ({ row, column }) => `${row}-${column}`;
+
+const modifySoldiersPosition = ({ 
+  positionState: { column, row, isSoldier },
+  soldiersPosition
+}) => {
+  const soldierPositionKeys = Object.keys(soldiersPosition);
+  const newKey = getPositionTemplate({column, row});
+
+  if (isSoldier) return ({...soldiersPosition, [newKey]: [row, column]})
+
+  // Remove from obj
+  return soldierPositionKeys.reduce((prev, key) => {
+      if (!prev[key]) prev[key] = soldierPositionKeys[key];
+      return prev;
+  }, {});
+};
+
+/******************************************
+ *         General Validations
+ *****************************************/
+
+const GENERAL_VALIDATIONS = {
+  numberOfSoldiers: {
+      errorTerm: ({isAdd, totalSoldiers}) => !(totalSoldiers <= 22 && totalSoldiers >= 0), 
+      errorMessage: "There should be 0-22 soldiers on board"
+  },
+  soldierAlreadyExists: {
+      errorTerm: ({position, isAdd, soldiersPosition}) => isAdd && !!soldiersPosition[getPositionTemplate(position)],
+      errorMessage: "Soldier already exists..."
+  },
+  soldierNotExists: { 
+      errorTerm: ({position, isAdd, soldiersPosition}) => !isAdd && !soldiersPosition[getPositionTemplate(position)],
+      errorMessage: "Soldier not exists..."
+  }
+};
+
+const checkForGeneralValidationErrors = ({ 
+  isAdd, 
+  soldiersPosition, 
+  position 
+}) => {
+  const totalSoldiers = Object.keys(soldiersPosition).length;
+
+  return Object.keys(GENERAL_VALIDATIONS).reduce((prev, ruleKey) => {
+
+      const validationRule = GENERAL_VALIDATIONS[ruleKey];
+      const data = { position, isAdd, soldiersPosition, totalSoldiers };
+
+      if (validationRule.errorTerm(data)) {
+        prev.push(validationRule.errorMessage);
+      }
+      
+      return prev;
+  }, []);
+};
+
+
+/***************************************
  *                App
  ***************************************/
 const defaultMatrix = CreateDefaultMatrix({});
 
 const App = () => {
-  const [changedSoldierPosition, setChangedSoldierPosition] = useState({});
-  const [boardMatrix, setBoardMatrix] = useState(defaultMatrix);
+  const [{ boardMatrix, soldiersPosition }, setCheckersBoardState] = useState({
+    boardMatrix: defaultMatrix,
+    soldiersPosition: {}
+  });
 
-  const onSoldiersPositionChange = (data) => {
-    setChangedSoldierPosition(data.changedSoldierPosition)
+  const onSoldiersPositionChange = (positionState) => { 
+    const newSoldiersPosition = modifySoldiersPosition({ 
+      positionState, 
+      soldiersPosition
+    });
+
+    const newMatrixData = AddRemoveSoldierFromMatrix({ 
+      boardMatrix, 
+      positionState 
+    });
+
+    setCheckersBoardState({
+      boardMatrix: newMatrixData,
+      soldiersPosition: newSoldiersPosition
+    });
   };
 
-  useEffect(() => {
-    if (!changedSoldierPosition) return;
+  const handleCheckForGeneralErrors = ({ position, isAdd }) => {
 
-    const newMatrixData = AddRemoveSoldierFromBoard({ boardMatrix, changedSoldierPosition })
+    return checkForGeneralValidationErrors({ 
+      position, 
+      isAdd, 
+      soldiersPosition,
+    })
+  }
 
-    setBoardMatrix(newMatrixData)
-
-  }, [changedSoldierPosition])
-  
   return (
     <StyledApp>
       <Container fluid style={{ paddingLeft: 0, paddingRight: 0 }}>
         <Header/>
-        <Content changedSoldierPosition={changedSoldierPosition}
-                 onSoldiersPositionChange={onSoldiersPositionChange}
+        <Content onSoldiersPositionChange={onSoldiersPositionChange}
                  boardMatrix={boardMatrix}
+                 checkForGeneralValidationErrors={handleCheckForGeneralErrors}
         />
       </Container>
    </StyledApp>

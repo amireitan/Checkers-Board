@@ -11,7 +11,6 @@ const StyledForm = styled.div`
 
 const StyledFormEnhanced = StyledForm.withComponent(Form);
 
-const getPositionTemplate = ({ row, column }) => `${row.value}-${column.value}`;
 
 const getFieldsValidations = () => {
     const isInRange = val => val > 0 && val <= 8;
@@ -23,46 +22,42 @@ const getFieldsValidations = () => {
     };
 }
 
-const GENERAL_VALIDATIONS = {
-    numberOfSoldiers: {
-        errorTerm: ({isAdd, totalSoldiers}) => !(totalSoldiers <= 22 && totalSoldiers >= 0), 
-        errorMessage: "There should be 0-22 soldiers on board"
-    },
-    soldierAlreadyExists: {
-        errorTerm: ({formState, isAdd, soldiersPosition}) => isAdd && !!soldiersPosition[getPositionTemplate(formState)],
-        errorMessage: "Soldier already exists..."
-    },
-    soldierNotExists: { 
-        errorTerm: ({formState, isAdd, soldiersPosition}) => !isAdd && !soldiersPosition[getPositionTemplate(formState)],
-        errorMessage: "Soldier not exists..."
-    }
-};
-
 const INITIAL_STATE = {
-    column: { value: '', errorMessage: ''},
-    row: { value: '', errorMessage: ''},
+    formState: {
+        column: { value: '', errorMessage: ''},
+        row: { value: '', errorMessage: ''},
+    },
+    generalErrors: []
 }
 
 const VALIDATIONS = getFieldsValidations();
 
-const SoldierPositionForm = ({ onSoldiersPositionChange, soldiersPositionInitState = {} }) => {
-    const [formState, setFormState] = useState(INITIAL_STATE);
-    const [soldiersPosition, setSoldiersPosition] = useState(soldiersPositionInitState);
-    const [generalErrors, setGeneralErrors] = useState([]);
+
+/***************************
+ *   SoldierPositionForm     
+ ***************************/
+
+const SoldierPositionForm = ({ 
+    onSoldiersPositionChange, 
+    soldiersPositionInitState = {}, 
+    checkForGeneralValidationErrors
+}) => {
+    const [{ formState, generalErrors }, setFormState] = useState(INITIAL_STATE);
 
     const onPropChange = (e) => {
         const { name, value } = e.target;
 
         setFormState({
-            ...formState,
-            [name]: { ...formState[name], value: Number(value) }
+            formState: {
+                ...formState,
+                [name]: { ...formState[name], value: Number(value) }
+            },
+            generalErrors
         });
     };
 
-    const verifyFormValidation = useCallback(() => {
-        const isFormValid = (state) => Object.keys(state).every(propName => !state[propName].errorMessage);
-        
-        const newFormState = Object.keys(formState).reduce((prev, propName) => {
+    const checkFieldsValidation = useCallback(() => {
+        return Object.keys(formState).reduce((prev, propName) => {
             const propObj = formState[propName];
             const { errorTerm, errorMessage } = VALIDATIONS[propName];
             
@@ -74,47 +69,9 @@ const SoldierPositionForm = ({ onSoldiersPositionChange, soldiersPositionInitSta
             return prev;
         }, {});
 
-        setFormState(newFormState);
-
-        return isFormValid(newFormState);
     },[formState]);
 
-    const modifySoldiersPosition = ({ isAdd, soldiersPosition, formState }) => {
-        const soldierPositionKeys = Object.keys(soldiersPosition);
-        const newKey = getPositionTemplate(formState);
-
-        if (isAdd) return ({...soldiersPosition, [newKey]: [formState.row, formState.column]})
-
-        // Remove from obj
-        return soldierPositionKeys.reduce((prev, key) => {
-            if (!prev[key]) prev[key] = soldierPositionKeys[key];
-            return prev;
-        }, {});
-    };
-
-    const getTotalSoldiers = useCallback(() => Object.keys(soldiersPosition).length, [soldiersPosition]);
-
-    const validateGeneralRules = ({ isAdd, totalSoldiers, soldiersPosition, formState }) => {
-        return Object.keys(GENERAL_VALIDATIONS).reduce((prev, ruleKey) => {
-            const validationRule = GENERAL_VALIDATIONS[ruleKey];
-            const data = { formState, totalSoldiers, isAdd, soldiersPosition };
-
-            if (validationRule.errorTerm(data)) prev.push(validationRule.errorMessage);
-            return prev;
-        }, []);
-    };
-
-    const verifyGeneralValidationRules = ({ isAdd, totalSoldiers, soldiersPosition, formState }) => {
-        const errorMessages = validateGeneralRules({ isAdd, totalSoldiers, soldiersPosition, formState  });
-
-        setGeneralErrors(errorMessages);
-
-        return !errorMessages.length;
-    }
-
-    const isPositionChanged = ({ formState, isAdd }) => {
-        return isAdd !== !!soldiersPosition[getPositionTemplate(formState)] 
-    };
+    const isFormValid = (state) => Object.keys(state).every(propName => !state[propName].errorMessage);
 
     const getKeyValueColRaw = (formState) => {
         return Object.keys(formState).reduce((prev, propName) => {
@@ -123,25 +80,32 @@ const SoldierPositionForm = ({ onSoldiersPositionChange, soldiersPositionInitSta
         }, {});
     }
 
-    const verifyAllValid = (conditions) => conditions.every(isValid => isValid);
-
     const onActionButtonsClick = ({ isAdd }) => () => {
+        const position = {
+            column: formState.column.value - 1,
+            row: formState.row.value - 1,
+        };
+        
+        const generalErrors = checkForGeneralValidationErrors({ position, isAdd });
+        const isGeneralErrosValid = !generalErrors.length;
 
-        const isAllValid = verifyAllValid([
-            verifyGeneralValidationRules({ isAdd, formState, soldiersPosition, totalSoldiers: getTotalSoldiers()}),
-            verifyFormValidation(formState),
-            isPositionChanged({ formState, isAdd})
-        ]);
+        const newFormState = checkFieldsValidation(formState);
+        const isAllValid = isGeneralErrosValid && isFormValid(newFormState);
+
+        setFormState({
+            formState: newFormState,
+            generalErrors
+        })
 
         if (isAllValid){
-            const newSoldiersPosition = modifySoldiersPosition({ isAdd, soldiersPosition, formState });
-
-            setSoldiersPosition(newSoldiersPosition);
-
-            const changedSoldierPosition = { ...getKeyValueColRaw(formState), isAdd };
+            const { column, row } = getKeyValueColRaw(formState);
 
             //CB function
-            onSoldiersPositionChange({ soldiersPosition: newSoldiersPosition, changedSoldierPosition })
+            onSoldiersPositionChange({ 
+                column, 
+                row, 
+                isSoldier: isAdd 
+            });
         };
     };
 
