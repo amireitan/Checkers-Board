@@ -12,16 +12,25 @@ const StyledCell = styled("li")`
     background: ${({color}) => color};
 `;
 
-
 const StyledSoldier = styled("div")`
     display: inline-block;
-    background: ${({color}) => color};
-    width: 90%;
-    height: 90%;
-    border-radius: 100%;
-    border: 1px solid #333333;
+    width: 80%;
+    height: 80%;
+    display: flex;
+    font-size: 4em;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    position: absolute;
 `;
 
+const emojiList = [
+    "😀","😃","😄","😁","😆","😍","😋","😛","😝","😜","😎","🤗","🤑","🤠","🤡","😈"
+];
+
+const getRandomEmoji = (emojisList) => {
+    return emojisList[Math.floor(Math.random() * emojisList.length)]
+}
 
 const BoardCell = ({ cellData, rowIndex, colIndex, soldierColor = "purple" }) => { 
     const { isSoldier, color } = cellData;
@@ -30,7 +39,7 @@ const BoardCell = ({ cellData, rowIndex, colIndex, soldierColor = "purple" }) =>
         <StyledCell color={color} key={`row-${rowIndex}-col-${colIndex}`}>
             {
                 isSoldier 
-                    ? <StyledSoldier color={soldierColor}/>
+                    ? <StyledSoldier><Emojione text={getRandomEmoji(emojiList)} /></StyledSoldier>
                     : null
             }
         </StyledCell>
