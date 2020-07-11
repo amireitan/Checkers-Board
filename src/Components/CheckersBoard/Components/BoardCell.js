@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from "@emotion/styled";
+import { Emojione } from 'react-emoji-render';
 
 const StyledCell = styled("li")`
     display: flex;
@@ -20,6 +21,7 @@ const StyledSoldier = styled("div")`
     border-radius: 100%;
     border: 1px solid #333333;
 `;
+
 
 const BoardCell = ({ cellData, rowIndex, colIndex, soldierColor = "purple" }) => { 
     const { isSoldier, color } = cellData;

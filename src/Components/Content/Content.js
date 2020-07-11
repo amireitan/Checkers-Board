@@ -22,7 +22,7 @@ const Content = ({
 }) => {
     return (
         <StyledContent>
-            <Row>
+            <Row style={{height: "100%"}}>
             <Col sm={12} lg={4}>
                 <SideBar>
                 <SoldierPositionForm  

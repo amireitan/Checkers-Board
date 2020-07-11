@@ -74,13 +74,15 @@ const modifySoldiersPosition = ({
   soldiersPosition
 }) => {
   const soldierPositionKeys = Object.keys(soldiersPosition);
-  const newKey = getPositionTemplate({column, row});
+  const newPositionKey = getPositionTemplate({column, row});
 
-  if (isSoldier) return ({...soldiersPosition, [newKey]: [row, column]})
+  if (isSoldier) return ({ ...soldiersPosition, [newPositionKey]: [row, column] });
 
-  // Remove from obj
+
   return soldierPositionKeys.reduce((prev, key) => {
-      if (!prev[key]) prev[key] = soldierPositionKeys[key];
+      if (key !== newPositionKey) {
+        prev[key] = soldiersPosition[key];
+      }
       return prev;
   }, {});
 };
@@ -90,17 +92,19 @@ const modifySoldiersPosition = ({
  *****************************************/
 
 const GENERAL_VALIDATIONS = {
-  numberOfSoldiers: {
-      errorTerm: ({isAdd, totalSoldiers}) => !(totalSoldiers <= 22 && totalSoldiers >= 0), 
-      errorMessage: "There should be 0-22 soldiers on board"
-  },
   soldierAlreadyExists: {
-      errorTerm: ({position, isAdd, soldiersPosition}) => isAdd && !!soldiersPosition[getPositionTemplate(position)],
+      errorTerm: ({position, isAdd, soldiersPosition}) => 
+        isAdd && !!soldiersPosition[getPositionTemplate(position)],
       errorMessage: "Soldier already exists..."
   },
   soldierNotExists: { 
-      errorTerm: ({position, isAdd, soldiersPosition}) => !isAdd && !soldiersPosition[getPositionTemplate(position)],
+      errorTerm: ({position, isAdd, soldiersPosition}) => 
+        !isAdd && !soldiersPosition[getPositionTemplate(position)],
       errorMessage: "Soldier not exists..."
+  },
+  numberOfSoldiers: {
+    errorTerm: ({isAdd, totalSoldiers}) => totalSoldiers < 0 || totalSoldiers > 22, 
+    errorMessage: "There should be 0-22 soldiers on board"
   }
 };
 
@@ -111,10 +115,18 @@ const checkForGeneralValidationErrors = ({
 }) => {
   const totalSoldiers = Object.keys(soldiersPosition).length;
 
+  debugger;
+
   return Object.keys(GENERAL_VALIDATIONS).reduce((prev, ruleKey) => {
 
       const validationRule = GENERAL_VALIDATIONS[ruleKey];
-      const data = { position, isAdd, soldiersPosition, totalSoldiers };
+
+      const data = { 
+        position, 
+        isAdd, 
+        soldiersPosition, 
+        totalSoldiers: isAdd ? totalSoldiers + 1 : totalSoldiers 
+      };
 
       if (validationRule.errorTerm(data)) {
         prev.push(validationRule.errorMessage);
