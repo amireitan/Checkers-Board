@@ -45,10 +45,9 @@ const INITIAL_STATE = {
 
 const VALIDATIONS = getFieldsValidations();
 
-
-const SoldierPositionForm = ({ onSoldiersPositionChange }) => {
+const SoldierPositionForm = ({ onSoldiersPositionChange, initSoldiersPosition = {} }) => {
     const [formState, setFormState] = useState(INITIAL_STATE);
-    const [soldiersPosition, setSoldiersPosition] = useState({});
+    const [soldiersPosition, setSoldiersPosition] = useState(initSoldiersPosition);
     const [generalErrors, setGeneralErrors] = useState([]);
 
     const onPropChange = (e) => {
@@ -124,15 +123,15 @@ const SoldierPositionForm = ({ onSoldiersPositionChange }) => {
         }, {});
     }
 
-    const verifyAllValid = (...conditions) => conditions.every(isValid => isValid);
+    const verifyAllValid = (conditions) => conditions.every(isValid => isValid);
 
     const onActionButtonsClick = ({ isAdd }) => () => {
 
-        const isAllValid = verifyAllValid(
+        const isAllValid = verifyAllValid([
             verifyGeneralValidationRules({ isAdd, formState, soldiersPosition, totalSoldiers: getTotalSoldiers()}),
             verifyFormValidation(formState),
             isPositionChanged({ formState, isAdd})
-        )
+        ]);
 
         if (isAllValid){
             const newSoldiersPosition = modifySoldiersPosition({ isAdd, soldiersPosition, formState });
