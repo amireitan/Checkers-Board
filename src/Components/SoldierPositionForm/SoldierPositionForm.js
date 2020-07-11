@@ -45,9 +45,9 @@ const INITIAL_STATE = {
 
 const VALIDATIONS = getFieldsValidations();
 
-const SoldierPositionForm = ({ onSoldiersPositionChange, initSoldiersPosition = {} }) => {
+const SoldierPositionForm = ({ onSoldiersPositionChange, soldiersPositionInitState = {} }) => {
     const [formState, setFormState] = useState(INITIAL_STATE);
-    const [soldiersPosition, setSoldiersPosition] = useState(initSoldiersPosition);
+    const [soldiersPosition, setSoldiersPosition] = useState(soldiersPositionInitState);
     const [generalErrors, setGeneralErrors] = useState([]);
 
     const onPropChange = (e) => {

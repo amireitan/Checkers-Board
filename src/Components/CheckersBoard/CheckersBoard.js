@@ -1,32 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import Board, { CreateDefaultMatrix,  AddRemoveSoldierFromBoard} from "./Components/Board";
-import { BoardTitle } from "./Components/BoardTitle";
+import React from 'react';
+import styled from "@emotion/styled";
+import BoardRow from "./Components/BoardRow";
 
-const defaultMatrix = CreateDefaultMatrix({
-    // colorPalette: ["green", "yellow"]
-});
+const StyledBoard = styled("ul")`
+    width: 100%;
+    height: 100%;
+    padding: 23px;
+    border: 1px solid #5f5f5f;
+    background: #181a1d;
+`;
 
-
-const CheckersBoard = ({ matrix = defaultMatrix, changedSoldierPosition }) => {
-
-    const [matrixBoard, setMatrixBoard] = useState(matrix);
-    
-    useEffect(() => {
-        if (!changedSoldierPosition) return;
-
-        const newMatrixData = AddRemoveSoldierFromBoard({matrixBoard, changedSoldierPosition})
-
-        setMatrixBoard(newMatrixData)
-
-    }, [changedSoldierPosition])
+const CheckersBoard = ({ boardMatrix }) => {
     
     return (
-        <>  
-            <Board 
-                data={matrixBoard}
-                soldierColor={"#af0516"}
-            />
-        </>
+        <StyledBoard style={{width: "100%", height: "100%"}}>
+            { boardMatrix.map((rowData, index) => {
+                    return (
+                        <li key={`row-${index}`}>
+                            <BoardRow 
+                                rowData={rowData} 
+                                rowIndex={index}
+                                soldierColor={"#af0516"}
+                            /> 
+                        </li>  
+                    )
+                })
+            }
+        </StyledBoard>
     )
 };
 

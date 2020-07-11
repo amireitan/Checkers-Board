@@ -21,15 +21,13 @@ const StyledSoldier = styled("div")`
     border: 1px solid #333333;
 `;
 
-
-
 const BoardCell = ({ cellData, rowIndex, colIndex, soldierColor = "purple" }) => { 
-    const { isHasSoldier, color } = cellData;
+    const { isSoldier, color } = cellData;
 
     return ( 
         <StyledCell color={color} key={`row-${rowIndex}-col-${colIndex}`}>
             {
-                isHasSoldier 
+                isSoldier 
                     ? <StyledSoldier color={soldierColor}/>
                     : null
             }
