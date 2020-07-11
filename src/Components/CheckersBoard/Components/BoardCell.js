@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from "@emotion/styled";
-import { css } from "@emotion/core";
 
 const StyledCell = styled("li")`
     display: flex;
@@ -8,7 +7,6 @@ const StyledCell = styled("li")`
     align-items: center;
     justify-content: center;
     flex-grow: 1;
-    height: 12.5%;
     height: 100px;
     background: ${({color}) => color};
 `;
@@ -39,4 +37,4 @@ const BoardCell = ({ cellData, rowIndex, colIndex, soldierColor = "purple" }) =>
     );
 };
 
-export default BoardCell;
+export default React.memo(BoardCell);

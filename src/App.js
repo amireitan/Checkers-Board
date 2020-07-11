@@ -1,18 +1,17 @@
 import React, { useState } from 'react';
-import logo from './logo.svg';
 import './App.css';
 import SoldierPositionForm from "./Components/SoldierPositionForm/SoldierPositionForm";
 import CheckersBoard from "./Components/CheckersBoard/CheckersBoard";
 import { Container, Col, Row } from "react-bootstrap";
 
 import styled from "@emotion/styled";
-import { css } from "@emotion/core";
 
 const StyleTitle = styled("h1")`
     font-family: monospace;
     text-shadow: -1px -1px #5a5050;
     font-size: 30px;
-    padding: 10px;
+    padding: 11px;
+    margin: 0px;
 `;
 
 const Header = ({ children }) => {

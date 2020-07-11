@@ -2,7 +2,6 @@ import React, { useState, useCallback } from 'react';
 import { Form, Button, Container } from "react-bootstrap";
 import { GeneralFormErrors } from "./Components/GeneralErrors";
 import styled from "@emotion/styled";
-import { css } from "@emotion/core";
 
 const StyledForm = styled.div`
     padding: 21px;
@@ -165,7 +164,7 @@ const SoldierPositionForm = ({ onSoldiersPositionChange }) => {
                 <Button onClick={onActionButtonsClick({isAdd: true})}>Add</Button>{' '}
                 <Button onClick={onActionButtonsClick({isAdd: false})}>Remove</Button>
                 {
-                    generalErrors.length && <GeneralFormErrors generalErrors={generalErrors} /> || null
+                    (generalErrors.length && <GeneralFormErrors generalErrors={generalErrors} />) || null
                 }
             </StyledFormEnhanced>
         </Container>

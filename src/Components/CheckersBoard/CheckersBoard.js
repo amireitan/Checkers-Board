@@ -1,12 +1,11 @@
-
 import React, { useState, useEffect } from 'react';
-import { Container} from "react-bootstrap";
 import Board, { CreateDefaultMatrix,  AddRemoveSoldierFromBoard} from "./Components/Board";
 import { BoardTitle } from "./Components/BoardTitle";
 
 const defaultMatrix = CreateDefaultMatrix({
-    // colorPalette: [["green", "yellow"]]
+    // colorPalette: ["green", "yellow"]
 });
+
 
 const CheckersBoard = ({ matrix = defaultMatrix, changedSoldierPosition }) => {
 

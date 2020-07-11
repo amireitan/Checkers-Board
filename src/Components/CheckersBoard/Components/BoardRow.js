@@ -1,10 +1,9 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import styled from "@emotion/styled";
-import { css } from "@emotion/core";
 
 import BoardCell from "./BoardCell";
 
-const StyledRows = styled("div")`
+const StyledRows = styled("ul")`
     display: flex;
     flex-direction: row;
     background: ${({color}) => color};

@@ -1,7 +1,6 @@
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import styled from "@emotion/styled";
-import { css } from "@emotion/core";
 import BoardRow from "./BoardRow";
 
 const StyledBoard = styled("ul")`
