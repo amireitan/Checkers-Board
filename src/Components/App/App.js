@@ -115,8 +115,6 @@ const checkForGeneralValidationErrors = ({
 }) => {
   const totalSoldiers = Object.keys(soldiersPosition).length;
 
-  debugger;
-
   return Object.keys(GENERAL_VALIDATIONS).reduce((prev, ruleKey) => {
 
       const validationRule = GENERAL_VALIDATIONS[ruleKey];

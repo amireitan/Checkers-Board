@@ -5,7 +5,7 @@ import styled from "@emotion/styled";
 
 const StyledForm = styled.div`
     padding: 21px;
-    box-shadow: 11px 12px 12px 6px rgba(0,0,0,0.75);
+    box-shadow: 1px 1px 15px -1px rgba(0,0,0,0.75);
     border-radius: 20px;
 `;
 
@@ -123,8 +123,8 @@ const SoldierPositionForm = ({
                     <Form.Text className="text-warning">{formState.row.errorMessage}</Form.Text>
                  </Form.Group>
                 <Form.Group controlId="buttons">   
-                    <Button style={{marginRight: "10px"}} onClick={onActionButtonsClick({isAdd: true})}>Add</Button>
-                    <Button onClick={onActionButtonsClick({isAdd: false})}>Remove</Button>       
+                    <Button  style={{marginRight: "10px"}} onClick={onActionButtonsClick({isAdd: true})}>Add</Button>
+                    <Button  onClick={onActionButtonsClick({isAdd: false})}>Remove</Button>       
                 </Form.Group>
                 {
                     (generalErrors.length && <GeneralFormErrors generalErrors={generalErrors} />) || null
