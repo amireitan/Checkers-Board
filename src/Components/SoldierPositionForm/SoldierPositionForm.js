@@ -39,7 +39,6 @@ const VALIDATIONS = getFieldsValidations();
 
 const SoldierPositionForm = ({ 
     onSoldiersPositionChange, 
-    soldiersPositionInitState = {}, 
     checkForGeneralValidationErrors
 }) => {
     const [{ formState, generalErrors }, setFormState] = useState(INITIAL_STATE);
